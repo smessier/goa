@@ -1142,6 +1142,8 @@ type StreamingResultMethodServerStream interface {
 type StreamingResultMethodClientStream interface {
 	// Recv reads instances of "AResult" from the stream.
 	Recv() (*AResult, error)
+	// Close closes the stream.
+	Close() error
 }
 
 // APayload is the payload type of the StreamingResultService service
@@ -1201,6 +1203,8 @@ type StreamingResultWithViewsMethodServerStream interface {
 type StreamingResultWithViewsMethodClientStream interface {
 	// Recv reads instances of "MultipleViews" from the stream.
 	Recv() (*MultipleViews, error)
+	// Close closes the stream.
+	Close() error
 }
 
 // MultipleViews is the result type of the StreamingResultWithViewsService
@@ -1309,6 +1313,8 @@ type StreamingResultWithExplicitViewMethodServerStream interface {
 type StreamingResultWithExplicitViewMethodClientStream interface {
 	// Recv reads instances of "MultipleViews" from the stream.
 	Recv() (*MultipleViews, error)
+	// Close closes the stream.
+	Close() error
 }
 
 // MultipleViews is the result type of the
@@ -1417,6 +1423,8 @@ type StreamingResultNoPayloadMethodServerStream interface {
 type StreamingResultNoPayloadMethodClientStream interface {
 	// Recv reads instances of "AResult" from the stream.
 	Recv() (*AResult, error)
+	// Close closes the stream.
+	Close() error
 }
 
 // AResult is the result type of the StreamingResultNoPayloadService service

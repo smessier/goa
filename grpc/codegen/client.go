@@ -285,6 +285,7 @@ func Decode{{ .Method.VarName }}Response(ctx context.Context, v interface{}, hdr
   }
 {{- end }}
 {{- if .ServerStream }}
+	
 	return &{{ .ClientStream.VarName }}{
 		stream: v.({{ .ClientStream.Interface }}),
 	{{- if .ViewedResultRef }}

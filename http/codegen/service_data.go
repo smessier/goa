@@ -2844,6 +2844,9 @@ func (s *{{ .VarName }}) Close() error {
 	var err error
 {{- if eq .Type "server" }}
 	{{- template "websocket_upgrade" (upgradeParams .Endpoint "Close") }}
+	if s.conn == nil {
+		return nil
+	}
 	if err = s.conn.WriteControl(
 		websocket.CloseMessage,
 		websocket.FormatCloseMessage(websocket.CloseNormalClosure, "server closing connection"),
@@ -2852,10 +2855,23 @@ func (s *{{ .VarName }}) Close() error {
 		return err
 	}
 {{- else }} {{/* client side code */}}
-	{{ comment "Send a nil payload to the server implying client closing connection." }}
-  if err = s.conn.WriteJSON(nil); err != nil {
-    return err
-  }
+	if s.conn == nil {
+		return nil
+	}
+	{{- if eq .SendName "" }}
+		if err = s.conn.WriteControl(
+			websocket.CloseMessage,
+			websocket.FormatCloseMessage(websocket.CloseNormalClosure, "client closing connection"),
+			time.Now().Add(time.Second),
+		); err != nil {
+			return err
+		}
+	{{- else }}
+		{{ comment "Send a nil payload to the server implying client closing connection." }}
+		if err = s.conn.WriteJSON(nil); err != nil {
+			return err
+		}
+	{{- end }}
 {{- end }}
 	return s.conn.Close()
 }

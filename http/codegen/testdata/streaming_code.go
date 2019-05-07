@@ -120,6 +120,9 @@ func (s *StreamingResultMethodServerStream) Close() error {
 	if err != nil {
 		return err
 	}
+	if s.conn == nil {
+		return nil
+	}
 	if err = s.conn.WriteControl(
 		websocket.CloseMessage,
 		websocket.FormatCloseMessage(websocket.CloseNormalClosure, "server closing connection"),
@@ -302,7 +305,6 @@ func (s *StreamingResultMethodClientStream) Recv() (*streamingresultservice.User
 	)
 	err = s.conn.ReadJSON(&body)
 	if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
-		s.conn.Close()
 		return rv, io.EOF
 	}
 	if err != nil {
@@ -310,6 +312,23 @@ func (s *StreamingResultMethodClientStream) Recv() (*streamingresultservice.User
 	}
 	res := NewStreamingResultMethodUserTypeOK(&body)
 	return res, nil
+}
+`
+
+var StreamingResultClientStreamCloseCode = `// Close closes the "StreamingResultMethod" endpoint websocket connection.
+func (s *StreamingResultMethodClientStream) Close() error {
+	var err error
+	if s.conn == nil {
+		return nil
+	}
+	if err = s.conn.WriteControl(
+		websocket.CloseMessage,
+		websocket.FormatCloseMessage(websocket.CloseNormalClosure, "client closing connection"),
+		time.Now().Add(time.Second),
+	); err != nil {
+		return err
+	}
+	return s.conn.Close()
 }
 `
 

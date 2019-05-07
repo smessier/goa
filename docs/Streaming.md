@@ -41,6 +41,8 @@ type ListServerStream interface {
 type ListClientStream interface {
     // Recv reads instances of "StoredBottle" from the stream.
     Recv() (*StoredBottle, error)
+    // Close the stream.
+    Close() error
 }
 ```
 

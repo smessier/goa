@@ -803,6 +803,10 @@ func buildMethodData(m *expr.MethodExpr, svcPkgName string, service *expr.Servic
 			cliStream.SendDesc = fmt.Sprintf("Send streams instances of %q.", spayloadName)
 			cliStream.SendTypeName = spayloadName
 			cliStream.SendTypeRef = spayloadRef
+		} else if m.Stream == expr.ServerStreamKind {
+			// explicit close on client-side will interrupt server stream. there may
+			// be some additional data in pipeline but ultimately Recv() will error.
+			cliStream.MustClose = true
 		}
 	}
 	for _, req := range m.Requirements {
